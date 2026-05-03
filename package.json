@@ -1,5 +1,5 @@
 {
-    "name": "godot-pck-util",
+    "name": "godot-pck-reader",
     "version": "1.0.0",
     "description": "Simple utility to read a subset of Godot's .pck files to in-memory files",
     "main": "dist/index.js",
