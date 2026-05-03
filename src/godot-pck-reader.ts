@@ -108,6 +108,14 @@ export class PckFile extends EventEmitter<PckFileEvents> {
         await this.readIndex();
         this.emit("ready");
     }
+
+    public getEntries() {
+        return this.entries;
+    }
+
+    public getEntryByPath(path: string) {
+        return this.entriesByPath[path];
+    }
 }
 
 export async function openPck(path: string) {
