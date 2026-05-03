@@ -1,10 +1,11 @@
 import fs, { type FileHandle } from "fs/promises";
 import { EventEmitter } from "events";
-import { read as readWithClb } from "fs";
+import { close as closeWithClb, read as readWithClb } from "fs";
 import { promisify } from "util";
 import { BlockReader, MAX_BLOCK_SIZE } from "./block-reader.js";
 
 const read = promisify(readWithClb);
+const close = promisify(closeWithClb);
 
 interface PckFileEvents {
     ready: [];
@@ -115,6 +116,10 @@ export class PckFile extends EventEmitter<PckFileEvents> {
 
     public getEntryByPath(path: string) {
         return this.entriesByPath[path];
+    }
+
+    public close() {
+        return close(this.handle.fd);
     }
 }
 
