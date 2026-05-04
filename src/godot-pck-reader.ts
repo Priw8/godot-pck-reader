@@ -1,11 +1,10 @@
 import fs, { type FileHandle } from "fs/promises";
 import { EventEmitter } from "events";
-import { close as closeWithClb, read as readWithClb } from "fs";
+import { read as readWithClb } from "fs";
 import { promisify } from "util";
 import { BlockReader, MAX_BLOCK_SIZE } from "./block-reader.js";
 
 const read = promisify(readWithClb);
-const close = promisify(closeWithClb);
 
 interface PckFileEvents {
     ready: [];
@@ -15,13 +14,11 @@ const MAGICK = "GDPC"
     .split("")
     .map((c, index) => c.charCodeAt(0) << (index * 8))
     .reduce((v, a) => a + v, 0);
-const SCRATCH_BUFFER_SIZE = 2048;
 const PCK_HEADER_SIZE = (32 + 32 + 32 + 32 + 32 + 32 + 64 + 64) / 8;
 
 export class PckFile extends EventEmitter<PckFileEvents> {
     private reader: BlockReader;
     private currentOffset = 0;
-    private scratchBuffer = Buffer.alloc(SCRATCH_BUFFER_SIZE);
 
     private magick = -1;
     private packVersion = -1;
@@ -119,7 +116,7 @@ export class PckFile extends EventEmitter<PckFileEvents> {
     }
 
     public close() {
-        return close(this.handle.fd);
+        return this.handle.close();
     }
 }
 
